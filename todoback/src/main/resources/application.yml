@@ -1,0 +1,38 @@
+spring:
+  # 데이터베이스 설정
+  datasource:
+    url: jdbc:mysql://localhost:3306/todo_app?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: tester
+    password: 1234
+
+    # MySQL DB 생성 및 사용자 설정 방법:
+    # 1. MySQL 접속: mysql -u root -p (Workbench에서는 불필요)
+    # 2. 데이터베이스 생성: CREATE DATABASE todo_app CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    # 3. 사용자 생성: CREATE USER 'tester'@'localhost' IDENTIFIED BY '1234';
+    # 4. 권한 부여: GRANT ALL PRIVILEGES ON todo_app.* TO 'tester'@'localhost';
+    # 5. 권한 새로고침: FLUSH PRIVILEGES;
+
+  # JPA 설정
+  jpa:
+    hibernate:
+      ddl-auto: update
+      # create: 기존 테이블 삭제 후 재생성
+      # create-drop: 애플리케이션 종료시 테이블 삭제
+      # update: 엔티티 변경사항만 반영 (개발환경 권장)
+      # validate: 엔티티와 테이블 매핑 검증만
+      # none: 아무 작업 안함
+    show-sql: true # SQL 쿼리 로그 출력 (개발시에만 true)
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        default_batch_fetch_size: 100
+
+# JWT 토큰 설정
+jwt:
+  secret: "gjaljgaigahljwljohajldhkajlahglgkalkgajoi3althmlkgalHGalkjhaljhalkjhakg"
+  access-token-expiration-minutes: 15
+
+server:
+  port: 8080

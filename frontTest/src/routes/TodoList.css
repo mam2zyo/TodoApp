@@ -1,0 +1,35 @@
+.todo-controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.todo-controls button {
+  padding: 10px 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-add {
+  background-color: #228be6;
+  color: white;
+}
+.btn-add:hover {
+  background-color: #1c7ed6;
+}
+
+.btn-toggle-completed {
+  background-color: #f1f3f5;
+  color: #495057;
+}
+
+.btn-toggle-completed:hover {
+  background-color: #e9ecef;
+}
+
+button:active {
+  transform: translateY(1px);
+}

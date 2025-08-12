@@ -1,0 +1,49 @@
+.todo-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 8px;
+  border-bottom: 1px solid #f1f3f5;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.todo-item:hover {
+  background-color: #f8f9fa;
+}
+
+.todo-item .content-area h3 {
+  margin: 0 0 4px 0;
+  font-weight: 500;
+}
+
+.todo-item .content-area p {
+  margin: 0;
+  font-size: 14px;
+  color: #868e96;
+}
+
+/* 완료된 항목 스타일 */
+.todo-item.completed .content-area h3,
+.todo-item.completed .content-area p {
+  text-decoration: line-through;
+  color: #ced4da;
+}
+
+.todo-item .button-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.todo-item .button-group button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px;
+  transition: transform 0.1s ease-in-out;
+}
+
+.todo-item .button-group button:hover {
+  transform: scale(1.2);
+}
