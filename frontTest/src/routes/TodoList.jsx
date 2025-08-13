@@ -2,6 +2,7 @@ import TodoItem from "../components/TodoItem";
 import { Link } from "react-router-dom";
 import "./TodoList.css";
 
+// revised by yuna 
 function TodoList({
   todos,
   onDelete,
