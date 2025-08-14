@@ -33,6 +33,8 @@ public class TodoService {
                 .completed(false)
                 .build();
         Todo saved = todoRepository.save(todo);
+        
+        System.out.println("Todo service [ sucessful !!!!!!!!!!! ==> [20250813] ]")
         return new TodoResponse(saved);
     }
 
