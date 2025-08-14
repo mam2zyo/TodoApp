@@ -20,7 +20,7 @@ function TodoList({
     <div>
       <h1>할 일 목록</h1>
       <div>
-        <p>전체 할 일 개수: {todos.totalCount}</p>
+        <p>전체 할 일 개수: {totalCount}</p>
         <p>
           남아있는 할 일 개수: {todos.filter((todo) => !todo.completed).length}
         </p>

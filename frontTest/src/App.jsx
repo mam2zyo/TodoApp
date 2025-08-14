@@ -60,9 +60,9 @@ function App() {
         title: newTodo.title,
         content: newTodo.content,
       });
-
-      setTodos([...todos, response.data]);
-      navigate("todos");
+      await fetchTodos(0);
+      setCurrentPage(0);
+      navigate("/todos");
     } catch (error) {
       console.error("할 일 추가 중 오류 발생:", error);
     }
@@ -103,7 +103,8 @@ function App() {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${API_URL}/${id}`);
-      setTodos(todos.filter((todo) => todo.id !== id));
+      await fetchTodos(0);
+      setCurrentPage(0);
     } catch (error) {
       console.error("할 일 삭제 중 오류 발생:", error);
     }
