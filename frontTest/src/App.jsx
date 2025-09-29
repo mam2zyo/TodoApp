@@ -1,7 +1,6 @@
+// src/App.jsx
 import { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
-import { Navigate, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
 import TodoList from "./routes/TodoList";
 import TodoNew from "./routes/TodoNew";
@@ -13,9 +12,6 @@ import "./routes/TodoFormPage.css";
 import "./components/TodoItem.css";
 import "./components/TodoForm.css";
 
-// const API_URL = "/api/todos";
-const API_URL = "http://localhost:8080/api/todos";
-
 function App() {
   const [todos, setTodos] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -25,25 +21,43 @@ function App() {
   const navigate = useNavigate();
   const PAGE_SIZE = 5;
 
-  const fetchTodos = async (page) => {
+  const fetchTodos = (page) => {
     try {
-      const response = await axios.get(
-        `${API_URL}?page=${page}&size=${PAGE_SIZE}`
-      );
-      const data = response.data;
-      setTotalCount(data.totalElements);
+      const allTodos = JSON.parse(localStorage.getItem("todos")) || [];
+      const startIndex = page * PAGE_SIZE;
+      const endIndex = startIndex + PAGE_SIZE;
+      const paginatedTodos = allTodos.slice(startIndex, endIndex);
 
+      setTotalCount(allTodos.length);
       setTodos((prevTodos) =>
-        page === 0 ? data.content : [...prevTodos, ...data.content]
+        page === 0 ? paginatedTodos : [...prevTodos, ...paginatedTodos]
       );
-
-      setIsLastPage(data.last);
+      setIsLastPage(endIndex >= allTodos.length);
     } catch (error) {
-      console.error("목록을 불러우는 중 오류 발생:", error);
+      console.error("목록을 불러오는 중 오류 발생:", error);
     }
   };
 
   useEffect(() => {
+    const allTodos = JSON.parse(localStorage.getItem("todos")) || [];
+    if (allTodos.length === 0) {
+      // 초기 데이터가 없을 경우 예시 데이터 추가
+      const initialTodos = [
+        {
+          id: 1,
+          title: "리액트 공부하기",
+          content: "useState 마스터하기",
+          completed: false,
+        },
+        {
+          id: 2,
+          title: "저녁 장보기",
+          content: "우유, 계란, 빵 사기",
+          completed: true,
+        },
+      ];
+      localStorage.setItem("todos", JSON.stringify(initialTodos));
+    }
     setCurrentPage(0);
     fetchTodos(0);
   }, []);
@@ -54,54 +68,67 @@ function App() {
     fetchTodos(nextPage);
   };
 
-  const handleAdd = async (newTodo) => {
+  const handleAdd = (newTodo) => {
     try {
-      const response = await axios.post(API_URL, {
-        title: newTodo.title,
-        content: newTodo.content,
-      });
+      const allTodos = JSON.parse(localStorage.getItem("todos")) || [];
+      const todoToAdd = {
+        ...newTodo,
+        id: Date.now(),
+        completed: false,
+      };
+      const updatedTodos = [...allTodos, todoToAdd];
+      localStorage.setItem("todos", JSON.stringify(updatedTodos));
 
-      setTodos([...todos, response.data]);
-      navigate("todos");
+      // 상태 업데이트 로직 수정: 페이징을 고려하여 현재 페이지에만 추가하거나, 목록을 새로고침
+      setCurrentPage(0);
+      fetchTodos(0);
+      navigate("/todos");
     } catch (error) {
       console.error("할 일 추가 중 오류 발생:", error);
     }
   };
 
-  const handleUpdate = async (updatedTodo) => {
+  const handleUpdate = (updatedTodo) => {
     try {
-      const response = await axios.put(`${API_URL}/${updatedTodo.id}`, {
-        title: updatedTodo.title,
-        content: updatedTodo.content,
-        completed: updatedTodo.completed,
-      });
-      setTodos(
-        todos.map((todo) => (todo.id === updatedTodo.id ? response.data : todo))
+      const allTodos = JSON.parse(localStorage.getItem("todos")) || [];
+      const updatedTodos = allTodos.map((todo) =>
+        todo.id === updatedTodo.id ? updatedTodo : todo
       );
-      navigate("todos");
+      localStorage.setItem("todos", JSON.stringify(updatedTodos));
+      setTodos(
+        todos.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo))
+      );
+      navigate("/todos");
     } catch (error) {
       console.error("할 일 수정 중 오류 발생:", error);
     }
   };
 
-  const handleToggle = async (id) => {
+  const handleToggle = (id) => {
     const todoToToggle = todos.find((todo) => todo.id === id);
     if (!todoToToggle) return;
 
     try {
-      const response = await axios.put(`${API_URL}/${id}`, {
-        ...todoToToggle,
-        completed: !todoToToggle.completed,
-      });
-      setTodos(todos.map((todo) => (todo.id === id ? response.data : todo)));
+      const allTodos = JSON.parse(localStorage.getItem("todos")) || [];
+      const updatedTodos = allTodos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      );
+      localStorage.setItem("todos", JSON.stringify(updatedTodos));
+      setTodos(
+        todos.map((todo) =>
+          todo.id === id ? { ...todo, completed: !todo.completed } : todo
+        )
+      );
     } catch (error) {
       console.error("할 일 상태 변경 중 오류 발생", error);
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = (id) => {
     try {
-      await axios.delete(`${API_URL}/${id}`);
+      const allTodos = JSON.parse(localStorage.getItem("todos")) || [];
+      const updatedTodos = allTodos.filter((todo) => todo.id !== id);
+      localStorage.setItem("todos", JSON.stringify(updatedTodos));
       setTodos(todos.filter((todo) => todo.id !== id));
     } catch (error) {
       console.error("할 일 삭제 중 오류 발생:", error);
