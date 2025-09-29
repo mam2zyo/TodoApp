@@ -1,35 +1,96 @@
-.todo-controls {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 24px;
+/* src/routes/TodoList.css */
+
+.todolist-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
-.todo-controls button {
-  padding: 10px 16px;
-  font-weight: 500;
+.header {
+  display: flex;
+  justify-content: space-between; /* 요소들을 양쪽 끝으로 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+  margin-bottom: 20px;
+  flex-wrap: wrap; /* 화면이 작아지면 줄바꿈 */
+  gap: 10px; /* 요소 사이의 간격 */
+}
+
+/* 이 부분이 추가되었습니다. */
+.todo-counts {
+  flex-grow: 1; /* 남은 공간을 차지하도록 함 */
+}
+
+.todo-counts h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+/* 이 부분이 추가되었습니다. */
+.todo-counts h3 {
+  margin: 5px 0 0;
+  font-size: 1.2rem;
+  color: #e74c3c; /* 미완료 개수는 다른 색으로 강조 */
+}
+
+.actions {
+  display: flex;
+  gap: 10px; /* 버튼 사이의 간격 */
+}
+
+.btn-add,
+.btn-toggle-completed {
+  padding: 10px 15px;
   border: none;
-  border-radius: 8px;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
+  font-size: 1rem;
+  transition: background-color 0.2s;
 }
 
 .btn-add {
-  background-color: #228be6;
+  background-color: #3498db;
   color: white;
 }
+
 .btn-add:hover {
-  background-color: #1c7ed6;
+  background-color: #2980b9;
 }
 
 .btn-toggle-completed {
-  background-color: #f1f3f5;
-  color: #495057;
+  background-color: #f1c40f;
+  color: #333;
 }
 
 .btn-toggle-completed:hover {
-  background-color: #e9ecef;
+  background-color: #f39c12;
 }
 
-button:active {
-  transform: translateY(1px);
+.todo-list {
+  list-style: none;
+  padding: 0;
+}
+
+.no-todos-message {
+  text-align: center;
+  color: #777;
+  font-size: 1.2rem;
+  padding: 40px 0;
+}
+
+.btn-load-more {
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.btn-load-more:hover {
+  background-color: #27ae60;
 }

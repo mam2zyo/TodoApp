@@ -15,15 +15,24 @@ import "./components/TodoForm.css";
 function App() {
   const [todos, setTodos] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
+  const [incompleteCount, setIncompleteCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [isLastPage, setIsLastPage] = useState(false);
   const [showCompleted, setShowCompleted] = useState(true);
   const navigate = useNavigate();
   const PAGE_SIZE = 5;
 
+  // 할 일 개수를 업데이트하는 헬퍼 함수
+  const updateCounts = (allTodos) => {
+    setTotalCount(allTodos.length);
+    setIncompleteCount(allTodos.filter((todo) => !todo.completed).length);
+  };
+
   const fetchTodos = (page) => {
     try {
       const allTodos = JSON.parse(localStorage.getItem("todos")) || [];
+      updateCounts(allTodos);
+
       const startIndex = page * PAGE_SIZE;
       const endIndex = startIndex + PAGE_SIZE;
       const paginatedTodos = allTodos.slice(startIndex, endIndex);
@@ -79,7 +88,8 @@ function App() {
       const updatedTodos = [...allTodos, todoToAdd];
       localStorage.setItem("todos", JSON.stringify(updatedTodos));
 
-      // 상태 업데이트 로직 수정: 페이징을 고려하여 현재 페이지에만 추가하거나, 목록을 새로고침
+      updateCounts(updatedTodos);
+
       setCurrentPage(0);
       fetchTodos(0);
       navigate("/todos");
@@ -95,6 +105,9 @@ function App() {
         todo.id === updatedTodo.id ? updatedTodo : todo
       );
       localStorage.setItem("todos", JSON.stringify(updatedTodos));
+
+      updateCounts(updatedTodos);
+
       setTodos(
         todos.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo))
       );
@@ -114,6 +127,9 @@ function App() {
         todo.id === id ? { ...todo, completed: !todo.completed } : todo
       );
       localStorage.setItem("todos", JSON.stringify(updatedTodos));
+
+      updateCounts(updatedTodos);
+
       setTodos(
         todos.map((todo) =>
           todo.id === id ? { ...todo, completed: !todo.completed } : todo
@@ -129,7 +145,11 @@ function App() {
       const allTodos = JSON.parse(localStorage.getItem("todos")) || [];
       const updatedTodos = allTodos.filter((todo) => todo.id !== id);
       localStorage.setItem("todos", JSON.stringify(updatedTodos));
+
+      updateCounts(updatedTodos);
+
       setTodos(todos.filter((todo) => todo.id !== id));
+      setTotalCount(updatedTodos.length);
     } catch (error) {
       console.error("할 일 삭제 중 오류 발생:", error);
     }
@@ -151,6 +171,7 @@ function App() {
               handleLoadMore={handleLoadMore}
               isLastPage={isLastPage}
               totalCount={totalCount}
+              incompleteCount={incompleteCount}
             />
           }
         />
